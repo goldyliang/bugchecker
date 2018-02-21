@@ -25,13 +25,15 @@ public class Test1 {
             int a = 2;
         } catch (IOException | FileNotFoundException e) {
             int i = 0;
+            //TODO: to be finished
             System.out.println ("Wrong");
         }
 
         try {
             int a = 2;
         } catch (IOException e) {
-            // Never happen
+            /* FIXME: how to handle?
+             */
         }
     }
 }

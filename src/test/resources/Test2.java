@@ -23,15 +23,22 @@ public class Test1 {
 
         try {
             int a = 2;
-        } catch (IOException | FileNotFoundException e) {
-            int i = 0;
-            System.out.println ("Wrong");
+        } catch (Exception e) {
+            if (a==2) {
+                System.exit(1);
+            }
         }
 
         try {
             int a = 2;
-        } catch (IOException e) {
-            // Never happen
+        } catch (Exception e) {
+            abort("Abort!");
+        }
+
+        try {
+            int a = 2;
+        } catch (Exception e) {
+            abort("Abort!");
         }
     }
 }

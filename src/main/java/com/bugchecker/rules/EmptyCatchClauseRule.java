@@ -1,11 +1,15 @@
 package com.bugchecker.rules;
 
 import com.bugchecker.Bug;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.CatchClause;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.bugchecker.AbstractRule;
+import com.github.javaparser.ast.stmt.Statement;
+
+import java.util.Optional;
 
 /**
  * Created by elnggng on 2/18/18.
@@ -23,15 +27,9 @@ public class EmptyCatchClauseRule extends AbstractRule<CatchClause> {
     public Bug match(CatchClause node) {
         BlockStmt block = (BlockStmt) node.getChildNodes().get(1);
 
-        boolean validExpression = block.getChildNodes().stream()
-                .anyMatch( n -> {
-                    if (n instanceof ExpressionStmt) {
-                        ExpressionStmt e = (ExpressionStmt) n;
-                        return !(e.getExpression() instanceof VariableDeclarationExpr);
-                    } else {
-                        return false;
-                    }
-                });
+        boolean validExpression = block.findAll(Statement.class)
+                .stream()
+                .anyMatch( n -> !n.isBlockStmt());
 
         if (! validExpression) {
             return new Bug(node, this);

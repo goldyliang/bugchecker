@@ -7,15 +7,18 @@ import com.github.javaparser.ast.Node;
  */
 public class Bug {
     private Node node;
-    private AbstractRule matcher;
+    private AbstractRule rule;
 
-    public Bug(Node node, AbstractRule matcher) {
+    public Bug(Node node, AbstractRule rule) {
         this.node = node;
-        this.matcher = matcher;
+        this.rule = rule;
     }
+
+    public Node getNode() {return node;}
+    public AbstractRule getRule() {return rule;}
 
     @Override
     public String toString() {
-        return "Node: " + node.toString() + "Rule: " + matcher.toString();
+        return "Node: " + node.toString() + "Rule: " + rule.toString();
     }
 }

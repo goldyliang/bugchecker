@@ -1,3 +1,0 @@
-Y08:45:29.205 [Test worker] DEBUG org.reflections.Reflections - going to scan these urls:
-@file:/home/elnggng/SOEN691/ExceptionChecker/build/classes/main/
-…08:45:29.352 [Test worker] INFO org.reflections.Reflections - Reflections took 142 ms to scan 1 urls, producing 1 keys and 1 values 
