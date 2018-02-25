@@ -55,7 +55,7 @@ public class BugCheckerTest {
         ProjectBugReport projectReport = BugChecker.getInstance().checkAllBugsInProject(folder, null);
 
         assert projectReport.getClassReports().size() == 4;
-        assert projectReport.getNumBugs() == 8;
+        assert projectReport.getNumBugs() == 10;
         assert projectReport.getNumBlockScanned() == 9;
     }
 
@@ -88,7 +88,7 @@ public class BugCheckerTest {
         ProjectBugReport projectReport = BugChecker.getInstance().checkAllBugsInProject(folder, null);
 
         assert projectReport.getClassReports().size() == 4;
-        assert projectReport.getNumBugs() == 8;
+        assert projectReport.getNumBugs() == 10;
         assert projectReport.getNumBlockScanned() == 9;
 
         projectReport.generateSummaryReport_CSV(new File("project.csv"));
@@ -101,7 +101,20 @@ public class BugCheckerTest {
             assert false;
         }
 
-        assert lines.size() == 5;
-        assert lines.get(0).equals("JavaSrc,BlockScanned,Issues");
+        assert lines.size() == 6;
+        //assert lines.get(0).equals("JavaSrc,BlockScanned,Issues");
+    }
+
+    @Test
+    public void testFileCheckerFolder_with_PathRegex () {
+        File folder = new File(BugCheckerTest.class.getClassLoader().
+                getResource("Test3.java").getFile()).getParentFile();
+
+        ProjectBugReport projectReport = BugChecker.getInstance().checkAllBugsInProject(
+                folder, null, "/com/");
+
+        assert projectReport.getClassReports().size() == 1;
+        assert projectReport.getNumBugs() == 3;
+        assert projectReport.getNumBlockScanned() == 2;
     }
 }

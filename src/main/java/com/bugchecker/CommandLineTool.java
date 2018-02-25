@@ -11,7 +11,7 @@ public class CommandLineTool {
 
     /**
      * Usage:  <java src file> <report file> |
-     *         <java src folder> <report folder>
+     *         <java src folder> <report folder> [path_regex]
      * @param args
      */
     public static void main (String [] args) {
@@ -22,7 +22,11 @@ public class CommandLineTool {
             ClassBugReport bugReport = BugChecker.getInstance().checkAllBugs(src);
             bugReport.generateClassReport_CSV(report);
         } else if (src.isDirectory()) {
-            ProjectBugReport projectReport = BugChecker.getInstance().checkAllBugsInProject(src, report);
+            String pathRegex = null;
+            if (args.length == 3) {
+                pathRegex = args[2];
+            }
+            BugChecker.getInstance().checkAllBugsInProject(src, report, pathRegex);
         } else {
             System.out.println ("The path to the src shall be either a java file or folder.");
         }

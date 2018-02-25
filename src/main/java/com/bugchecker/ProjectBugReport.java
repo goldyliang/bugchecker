@@ -7,8 +7,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by elnggng on 2/19/18.
@@ -27,24 +30,25 @@ public class ProjectBugReport {
 
     private long bugsFound = 0;
 
+    BugCountsPerRule bugCountsPerRule = new BugCountsPerRule();
+
     public ProjectBugReport(File projectFolder, File reportFolder) {
         this.projectFolder = projectFolder;
         this.reportFolder = reportFolder;
     }
 
-    public void increaseBlockScanned () {blockScanned ++;}
-
     public void addClassReport(ClassBugReport report) {
         classReports.add (report);
         blockScanned += report.getNumBlockScanned();
         bugsFound += report.getBugs().size();
+        bugCountsPerRule.addCount(report.getBugCountsPerRule());
 
         if (reportFolder != null && !reportFolderInitialized) {
             createReportFolder();
             reportFolderInitialized = true;
         }
 
-        if (reportFolder != null) {
+        if (reportFolder != null && report.getBugs().size() > 0) {
             try {
                 generateClassReport_CSV (report);
             } catch (IOException e) {
@@ -64,17 +68,29 @@ public class ProjectBugReport {
     public List<ClassBugReport> getClassReports() {return classReports;}
 
     public void generateSummaryReport_CSV(File reportFile) {
+
         try (PrintStream ps = new PrintStream(reportFile)) {
             //Print CSV titles
-            ps.println ("JavaSrc,BlockScanned,Issues");
+            ps.print ("JavaSrc,BlockScanned");
+
+            List<String> rules = bugCountsPerRule.getListRuleNames();
+            rules.forEach(rule -> {
+                        ps.print(",");
+                        ps.print("issues." + rule);
+                    }
+            );
+            ps.println();
+
+            ps.print ("Total," + blockScanned + ",");
+            ps.println (bugCountsPerRule.getStringCountValues (rules, ","));
 
             classReports.forEach( report -> {
                 ps.print (report.getJavaFile().toString());
                 ps.print (",");
                 ps.print (report.getNumBlockScanned());
                 ps.print (",");
-                ps.print (report.getBugs().size());
-                ps.println();
+
+                ps.println (report.getBugCountsPerRule().getStringCountValues(rules, ","));
             });
         } catch (IOException e) {
             log.error ("Error when generating report to " + reportFile.toString(), e);
@@ -122,7 +138,9 @@ public class ProjectBugReport {
 
             createReportFolder();
             for (ClassBugReport classBugReport : getClassReports()) {
-                generateClassReport_CSV (classBugReport);
+                if (classBugReport.getBugs().size() > 0) {
+                    generateClassReport_CSV(classBugReport);
+                }
             }
             completeReport();
         } catch (IOException e) {

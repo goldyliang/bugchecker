@@ -14,6 +14,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by elnggng on 2/17/18.
@@ -102,12 +103,23 @@ public class BugChecker {
     }
 
     public ProjectBugReport checkAllBugsInProject(File folder, File reportFolder) {
+        return checkAllBugsInProject(folder, reportFolder, null);
+    }
+
+    public ProjectBugReport checkAllBugsInProject(File folder, File reportFolder, String pathRegex) {
+        final Pattern filePathPattern = pathRegex != null ? Pattern.compile(pathRegex) : null;
+
         ProjectBugReport projectReport = new ProjectBugReport(folder, reportFolder);
 
         try {
             Files.walk(folder.toPath())
                     .filter(Files::isRegularFile)
-                    .filter(path -> path.getFileName().toString().endsWith(".java"))
+                    .filter(path ->  {
+                        String filePath = path.toString();
+
+                        return filePath.endsWith(".java") &&
+                                ( filePathPattern == null ||
+                                        filePathPattern.matcher(filePath).find());})
                     .forEach(path -> {
                         File javaFile = path.toFile();
                         ClassBugReport report = checkAllBugs(javaFile);

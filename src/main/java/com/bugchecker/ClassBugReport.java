@@ -1,11 +1,11 @@
 package com.bugchecker;
 
+import com.github.javaparser.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by elnggng on 2/19/18.
@@ -18,6 +18,8 @@ public class ClassBugReport {
     private File javaFile;
     private long blockScanned = 0;
 
+    BugCountsPerRule bugCountsPerRule = new BugCountsPerRule();
+
     public ClassBugReport(File javaFile) {
         this.javaFile = javaFile;
     }
@@ -26,11 +28,14 @@ public class ClassBugReport {
 
     public void addBug(Bug bug) {
         bugs.add (bug);
+        bugCountsPerRule.addCount(bug);
     }
 
     public long getNumBlockScanned() {return blockScanned;}
 
     public List<Bug> getBugs() {return bugs;}
+
+    public BugCountsPerRule getBugCountsPerRule() { return bugCountsPerRule; }
 
     public File getJavaFile() {return javaFile;}
 
@@ -40,7 +45,10 @@ public class ClassBugReport {
             ps.println ("Lines,Issue,Code Snippet");
 
             bugs.forEach( b -> {
-                ps.print (b.getNode().getRange().get().toString());
+                Optional<Range> range = b.getNode().getRange();
+                if (range.isPresent()) {
+                    ps.print(range.get().toString().replaceAll(",", ";"));
+                }
                 ps.print (",");
                 ps.print (b.getRule().getName());
                 ps.print (",");
