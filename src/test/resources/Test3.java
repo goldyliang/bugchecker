@@ -32,7 +32,7 @@ public class Test1 {
         try {
             int a = 2;
         } catch (IOException e) {
-            /* FIXME: how to handle?
+            /* fixme: how to handle?
              */
         }
     }

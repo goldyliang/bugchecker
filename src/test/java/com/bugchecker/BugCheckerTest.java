@@ -43,7 +43,7 @@ public class BugCheckerTest {
 
         ClassBugReport report = BugChecker.getInstance().checkAllBugs(file);
 
-        assert report.getBugs().size() == 2;
+        assert report.getBugs().size() == 3;
         assert report.getNumBlockScanned() == 2;
     }
 
