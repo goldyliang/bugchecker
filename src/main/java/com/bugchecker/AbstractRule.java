@@ -3,7 +3,7 @@ package com.bugchecker;
 import com.github.javaparser.ast.Node;
 
 /**
- * Created by elnggng on 2/18/18.
+ * Created by goldyliang on 2/18/18.
  */
 public abstract class AbstractRule <T extends Node> {
 

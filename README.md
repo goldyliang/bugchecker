@@ -23,13 +23,21 @@ Generate basic bug-check reports in CSV format
 
 **Usage**:
     
-To check for a single java file:
+To check a single java file:
 
     bin/BugChecker <path_to_src_file> <path_to_csv_report_file>
     
-To check for all java files under a project folder:
+To check all java files under a project folder:
 
     bin/BugChecker <path_to_src_folder> <path_to_csv_report_folder>
+    
+To check java files under a project folder, providing an regex for source file path pattern:
+
+    bin/BugChecker <path_to_src_folder> <path_to_csv_report_folder> <src_path_regex>
+    
+    example: following command only checks all java source files for 'main' (ignoring 'test', etc).
+    
+    bin/BugChecker <path_to_src_folder> <path_to_csv_report_folder> /main/
 
 For windows, replace 'BugChecker' with 'BugChecker.bat'
 

@@ -16,7 +16,7 @@ import com.github.javaparser.ast.visitor.TreeVisitor;
 import java.util.Optional;
 
 /**
- * Created by elnggng on 2/18/18.
+ * Created by goldyliang on 2/18/18.
  */
 public class OverCatchClauseRule extends AbstractRule<CatchClause> {
 
