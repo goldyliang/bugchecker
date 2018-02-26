@@ -1,6 +1,7 @@
 package com.bugchecker;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.visitor.TreeVisitor;
@@ -82,6 +83,9 @@ public class BugChecker {
         try {
             compilationUnit = JavaParser.parse(file);
         } catch (IOException e) {
+            log.error ("Error reading file: " + file.toString(), e);
+            return null;
+        } catch (ParseProblemException e) {
             log.error ("Error parsing file: " + file.toString(), e);
             return null;
         }
@@ -123,10 +127,15 @@ public class BugChecker {
                     .forEach(path -> {
                         File javaFile = path.toFile();
                         ClassBugReport report = checkAllBugs(javaFile);
-                        log.info ("Src file " + javaFile.toString() + " scanned. " +
-                                "Blocks scaned:" + report.getNumBlockScanned() +
-                                "; bugs found:" + report.getBugs().size());
-                        projectReport.addClassReport(report);
+                        if (report != null) {
+                            log.info("Src file " + javaFile.toString() + " scanned. " +
+                                    "Blocks scaned:" + report.getNumBlockScanned() +
+                                    "; bugs found:" + report.getBugs().size());
+                            projectReport.addClassReport(report);
+                        } else {
+                            log.warn("Src file " + javaFile.toString() +
+                                    " scanned with exception. No report is generated.");
+                        }
                     });
             projectReport.completeReport();
         } catch (IOException e) {
