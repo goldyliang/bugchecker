@@ -19,6 +19,8 @@ Generate basic bug-check reports in CSV format
   
   * Per project report with the statistics of the check result
 
+Refer to the source folder sampleReports/ for the examples of the reports for three open sourced projects.
+
 ## Command Line Tool
 
 **Usage**:
